@@ -1,35 +1,72 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { config, passport } from "@imtbl/sdk";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const baseConfig = new config.ImmutableConfiguration({
+  environment: config.Environment.SANDBOX,
+});
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+const passportInstance = new passport.Passport({
+  baseConfig,
+  clientId: "SdUitEnEh6iFUzq38sWEbBX3MSJoPOv2",
+  redirectUri: "https://*",
+  logoutRedirectUri: "http://localhost:5173/silent-logout",
+  audience: "platform_api",
+  scope: "openid offline_access email transact",
+});
+
+interface UserProfile {
+  email?: string;
+  nickname?: string;
+  sub: string;
 }
 
-export default App
+function App() {
+  const [user, setUser] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    window.addEventListener("load", function () {
+      passportInstance.loginCallback();
+    });
+    return () => {
+      window.removeEventListener("load", passportInstance.loginCallback);
+    };
+  }, []);
+
+  useEffect(() => {
+    async function initializeProvider() {
+      const provider = await passportInstance.connectImxSilent();
+      if (!provider) {
+        await passportInstance.connectImx();
+      }
+    }
+    initializeProvider();
+  }, []);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const userProfile = await passportInstance.getUserInfo();
+      if (userProfile) {
+        setUser(userProfile);
+      } else {
+        setUser(null);
+      }
+    }
+    fetchUser();
+  }, []);
+
+  return (
+    <div>
+      {user ? (
+        <>
+          <h1>Welcome, {user.nickname}!</h1>
+          <button onClick={() => passportInstance.logout()}>Logout</button>
+        </>
+      ) : (
+        <button onClick={() => passportInstance.connectImx()}>Login</button>
+      )}
+    </div>
+  );
+}
+
+export default App;
