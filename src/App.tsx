@@ -9,8 +9,8 @@ const baseConfig = new config.ImmutableConfiguration({
 const passportInstance = new passport.Passport({
   baseConfig,
   clientId: "SdUitEnEh6iFUzq38sWEbBX3MSJoPOv2",
-  redirectUri: "https://*",
-  logoutRedirectUri: "http://localhost:5173/silent-logout",
+  redirectUri: "http://localhost:5173/",
+  logoutRedirectUri: "http://localhost:5173/",
   audience: "platform_api",
   scope: "openid offline_access email transact",
 });
@@ -23,14 +23,15 @@ interface UserProfile {
 
 function App() {
   const [user, setUser] = useState<UserProfile | null>(null);
+ 
+ 
+  useEffect(() => {
+    passportInstance.logoutSilentCallback("/");
+  }, []);
+
 
   useEffect(() => {
-    window.addEventListener("load", function () {
-      passportInstance.loginCallback();
-    });
-    return () => {
-      window.removeEventListener("load", passportInstance.loginCallback);
-    };
+    passportInstance.loginCallback();
   }, []);
 
   useEffect(() => {
@@ -58,10 +59,11 @@ function App() {
   return (
     <div>
       {user ? (
-        <>
-          <h1>Welcome, {user.nickname}!</h1>
-          <button onClick={() => passportInstance.logout()}>Logout</button>
-        </>
+               <>
+               <h1>Welcome, {user.email}!</h1>
+               <button onClick={() => passportInstance.logout() }>Logout</button>
+             </>
+     
       ) : (
         <button onClick={() => passportInstance.connectImx()}>Login</button>
       )}
@@ -69,4 +71,4 @@ function App() {
   );
 }
 
-export default App;
+export { App };

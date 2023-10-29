@@ -40,3 +40,77 @@
 .read-the-docs {
   color: #888;
 }
+.hub-container {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  /* background-color: #f0f0f0;  giving a light gray background for contrast */
+  height: 100vh;  /* this makes the container fill the viewport height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+.login-container {
+    background-color: #ffffff;  
+  padding: 20px;
+  color: black;
+  border-radius: 10px;  /* rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* a subtle shadow for a lifted look */
+  width: 80%;  /* or any desired width, adjust as needed */
+  max-width: 500px;  /* a maximum width so it doesn't get too wide on large screens */
+}
+
+.hub-header {
+  display: flex;
+  align-items: center;
+}
+
+.hub-header img {
+  width: 50px;
+  margin-right: 10px;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.features {
+  display: flex;
+  margin-top: 20px;
+  color: #000;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #000;
+}
+
+.feature img {
+  width: 30px;
+}
+
+button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+.logout-button {
+  background-color: #f00;
+}
+
+.continue-button {
+  margin-top: 20px;
+}
